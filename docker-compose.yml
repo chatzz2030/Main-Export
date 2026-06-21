@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: synopsis-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  export-api:
+    build: .
+    container_name: synopsis-export-api
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB_NAME=video_synopsis_ai
+      - MONGO_COLLECTION=synopses
+    volumes:
+      - .:/app
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
